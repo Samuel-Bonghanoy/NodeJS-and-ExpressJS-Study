@@ -1,0 +1,18 @@
+{
+  "name": "node-farm",
+  "version": "1.0.0",
+  "description": "Learning nodejs",
+  "main": "basics.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "Samuel Bonghanoy",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "slugify": "^1.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
