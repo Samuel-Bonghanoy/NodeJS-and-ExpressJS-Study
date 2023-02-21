@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { listenerCount } = require('../models/tourModel');
 
 const Tour = require('../models/tourModel');
 
@@ -43,7 +44,37 @@ exports.getAllTours = async (req, res) => {
     console.log(JSON.parse(queryStr));
 
     console.log(req.query);
-    const query = Tour.find(JSON.parse(queryStr));
+    let query = Tour.find(JSON.parse(queryStr));
+
+    //3 Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      console.log('GIRLLL', sortBy);
+      console.log('GIRLLL', req.query.sort);
+      query = query.sort(sortBy);
+      // console.log('YESSSSS', query);
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    //field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    //PAGINATION
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip > numTours) throw new Error('This page does not exist');
+    }
     // const query = await Tour.find({
     //   duration: 5,
     //   difficulty: 'easy',
